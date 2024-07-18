@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Private Browsing</title>
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap');
+			html,
+			body {
+				margin: 0;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: stretch;
+				justify-content: stretch;
+				font-family: 'Noto Sans Mono', monospace;
+			}
+			button,
+			input {
+				font-family: inherit;
+			}
+			.container {
+				flex-grow: 1;
+				display: flex;
+				margin: 1rem 1rem;
+				flex-direction: column;
+				align-items: stretch;
+				overflow: hidden;
+			}
+			.browser-body {
+				flex-grow: 1;
+				display: flex;
+				flex-direction: row;
+				align-items: stretch;
+			}
+			#url-bar {
+				display: flex;
+				flex-direction: row;
+				margin-bottom: .5rem;
+			}
+			#url {
+				flex-grow: 1;
+			}
+			#browser-history {
+				flex-grow: 1;
+				max-width: 300px;
+				display: flex;
+				flex-direction: column;
+				margin-right: .5rem;
+			}
+			#browser-frame {
+				flex-grow: 8;
+			}
+			#browser-history-list {
+				list-style: none;
+				padding-left: 0;
+				overflow-y: scroll;
+				flex-grow: 1;
+				height: 0;
+				margin-bottom: 0;
+			}
+			#browser-history-list li:first-child {
+				border-top: 1px solid;
+			}
+			#browser-history-list li {
+				padding: 0.3em;
+				border-bottom: 1px solid;
+				font-size: 0.8rem;
+			}
+			#browser-history-list li:hover {
+				cursor: pointer;
+				opacity: .8;
+				background-color: lightgray;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<form id="url-bar">
+				<label for="url">URL: </label>
+				<input id="url" name="url" placeholder="https://github.com/" />
+				<button type="submit">Go</button>
+			</form>
+			<div class="browser-body">
+				<div id="browser-history">
+					<h1>History</h1>
+					<button id="clear-history-btn">Clear History</button>
+					<ul id="browser-history-list"></ul>
+				</div>
+				<iframe id="browser-frame" sandbox=""></iframe>
+			</div>
+		</div>
+		<script>
+			const browserFrame = document.querySelector('#browser-frame')
+			const urlBar = document.querySelector('#url-bar')
+			const chb = document.querySelector('#clear-history-btn')
+			const hlist = document.querySelector('#browser-history-list')
+
+			function loadHistory() {
+				fetch('/api.php?action=get_history')
+					.then(r => r.json())
+					.then(hist => {
+						hlist.innerHTML = ''
+						for (const u of hist) {
+							const li = document.createElement('li')
+							li.textContent = u
+							li.onclick = e => [e.preventDefault(), browse(u)]
+							hlist.appendChild(li)
+						}
+					})
+			}
+			function browse(url) {
+				if (!url) {
+					url = urlBar.url.placeholder
+				}
+				const u = new URL(url)
+				if (u.protocol === 'http:' || u.protocol === 'https:') {
+					urlBar.url.value = url
+					browserFrame.src = '/api.php?action=view&url=' + encodeURIComponent(url)
+				}
+			}
+
+			urlBar.onsubmit = e => {
+				e.preventDefault()
+				browse(urlBar.url.value)
+			}
+
+			chb.onclick = () => {
+				fetch('/api.php?action=clear_history').then(loadHistory)
+			}
+
+			browserFrame.onload = () => {
+				loadHistory()
+			}
+			loadHistory()
+		</script>
+	</body>
+</html>

