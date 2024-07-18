@@ -1,0 +1,1 @@
+FLAG=b"AIS3{C0PPer5mItHs_5H0R7_p@d_a7T4Ck}"
